@@ -7,6 +7,8 @@ Two request forms are shown:
 
 Usage:
     python invoke_realtime.py --endpoint <name> --audio sample.wav [--timestamps]
+    python invoke_realtime.py --endpoint <name> --audio sample.wav \
+        --config '{"timestamps": true, "language_code": "en", "keyterms": ["LibriVox"]}'
 """
 import argparse
 import json
@@ -56,6 +58,12 @@ def main():
     p.add_argument("--endpoint", required=True)
     p.add_argument("--audio", required=True, help="path to a WAV file (<= 120 seconds)")
     p.add_argument("--timestamps", action="store_true", help="request word-level timings")
+    p.add_argument(
+        "--config",
+        default=None,
+        help="JSON object of configuration options (see the README table); "
+        "merged with --timestamps",
+    )
     p.add_argument("--region", default=None)
     args = p.parse_args()
 
@@ -63,7 +71,10 @@ def main():
     with open(args.audio, "rb") as f:
         audio = f.read()
 
-    config = {"timestamps": True} if args.timestamps else None
+    config = json.loads(args.config) if args.config else {}
+    if args.timestamps:
+        config["timestamps"] = True
+    config = config or None
     result = transcribe(client, args.endpoint, audio, config)
 
     print(result["text"])
