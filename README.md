@@ -82,14 +82,27 @@ See [`examples/invoke_realtime.py`](examples/invoke_realtime.py) for a working i
 
 ### Configuration options
 
+All options verified against the published marketplace container (2026-08-18).
+
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `timestamps` | boolean | `false` | Include word-level `start` / `end` times in the response. |
+| `timestamps` | boolean | `false` | Include word-level `start` / `end` times in the response (exact forced-alignment timings; omitted for words that cannot be aligned). |
+| `language_code` / `language_codes` | string or list | `"en"` | Language(s) of the audio, from the 19 supported codes. Steers the default transcription prompt; ignored when a custom `prompt` is set. Provide one key or the other, not both. |
+| `prompt` | string (max 4096 chars) | model default | Custom transcription prompt. Overrides language steering. |
+| `keyterms_prompt` (aliases: `keyterms`, `word_boost`) | list of strings (max 2048 chars total) | none | Terms to bias the model toward - proper nouns, product names, jargon. Use exactly one of the three key names. |
+| `conversation_context` | list of strings (max 100 turns / 4096 chars), or a single string | none | Prior conversation turns, oldest first, for continuity and proper-noun consistency across requests. |
+| `sample_rate`, `channels` | integers | - | Required for raw `audio/pcm` input only; WAV carries them in its header. |
 
-<!-- TODO(assemblyai): confirm semantics and defaults before publishing. The following fields are
-     accepted by the request schema but their behavior is not documented here yet:
-     sample_rate (int), channels (int), prompt (str), language_code, conversation_context,
-     and one of keyterms / keyterms_prompt / word_boost (mutually exclusive). -->
+### Three ways to send configuration (real-time endpoint)
+
+1. **Multipart** (shown above): `audio` part + `config` part.
+2. **CustomAttributes header**: send raw audio bytes as the body and pass the config JSON via
+   the `InvokeEndpoint` `CustomAttributes` parameter (the
+   `X-Amzn-SageMaker-Custom-Attributes` header). Read only for raw-audio bodies; a multipart
+   or JSON body with this header present is rejected with HTTP 400 to avoid silently
+   dropping options.
+3. **JSON envelope**: `Content-Type: application/json` with
+   `{"audio_b64": "<base64 audio>", "content_type": "audio/wav", "config": {...}}`.
 
 Unrecognized options are rejected with HTTP 400 naming the offending field, so typos fail loudly rather
 than being silently ignored:
