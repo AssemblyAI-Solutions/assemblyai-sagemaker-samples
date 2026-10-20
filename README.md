@@ -11,6 +11,9 @@ and runnable examples for real-time and batch inference.
 - [`data/output/batch/`](data/output/batch) - the exact batch transform output for each batch input (no configuration, so no timestamps)
 - [`examples/`](examples) - runnable Python examples
 
+> **Universal-3.6 Pro Streaming**, the live streaming model package, has its own samples and
+> specification in [`universal-3-6-pro-streaming/`](universal-3-6-pro-streaming).
+
 ---
 
 ## Deployment
