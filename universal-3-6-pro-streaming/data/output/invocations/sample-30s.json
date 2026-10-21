@@ -1,0 +1,290 @@
+{
+  "session_id": "527a6de6-f11f-453c-a5e9-eb322fedf07d",
+  "text": "This is a LibriVox recording. All LibriVox recordings are in the public domain. For more information and to find out how you can volunteer, please visit librivox.org. That's L-I-B-R-I-V-O-X dot org. Recording by Annie Coleman in St. Louis, Missouri.",
+  "audio_duration_ms": 30000,
+  "turns": [
+    {
+      "turn_order": 0,
+      "transcript": "This is a LibriVox recording. All LibriVox recordings are in the public domain. For more information and to find out how you can volunteer, please visit librivox.org. That's L-I-B-R-I-V-O-X dot org. Recording by Annie Coleman in St. Louis, Missouri.",
+      "end_of_turn_confidence": 1.0,
+      "words": [
+        {
+          "start": 2240,
+          "end": 2638,
+          "text": "This",
+          "confidence": 0.999014,
+          "word_is_final": true
+        },
+        {
+          "start": 2657,
+          "end": 2856,
+          "text": "is",
+          "confidence": 0.999989,
+          "word_is_final": true
+        },
+        {
+          "start": 2875,
+          "end": 2974,
+          "text": "a",
+          "confidence": 0.999992,
+          "word_is_final": true
+        },
+        {
+          "start": 2993,
+          "end": 3789,
+          "text": "LibriVox",
+          "confidence": 0.999917,
+          "word_is_final": true
+        },
+        {
+          "start": 3808,
+          "end": 4803,
+          "text": "recording.",
+          "confidence": 0.99994,
+          "word_is_final": true
+        },
+        {
+          "start": 4822,
+          "end": 5120,
+          "text": "All",
+          "confidence": 0.999984,
+          "word_is_final": true
+        },
+        {
+          "start": 5139,
+          "end": 5935,
+          "text": "LibriVox",
+          "confidence": 0.999998,
+          "word_is_final": true
+        },
+        {
+          "start": 5954,
+          "end": 6949,
+          "text": "recordings",
+          "confidence": 0.999995,
+          "word_is_final": true
+        },
+        {
+          "start": 6968,
+          "end": 7266,
+          "text": "are",
+          "confidence": 0.999998,
+          "word_is_final": true
+        },
+        {
+          "start": 7285,
+          "end": 7484,
+          "text": "in",
+          "confidence": 0.999995,
+          "word_is_final": true
+        },
+        {
+          "start": 7503,
+          "end": 7801,
+          "text": "the",
+          "confidence": 0.999998,
+          "word_is_final": true
+        },
+        {
+          "start": 7820,
+          "end": 8417,
+          "text": "public",
+          "confidence": 0.999953,
+          "word_is_final": true
+        },
+        {
+          "start": 8436,
+          "end": 9132,
+          "text": "domain.",
+          "confidence": 0.999958,
+          "word_is_final": true
+        },
+        {
+          "start": 9151,
+          "end": 9449,
+          "text": "For",
+          "confidence": 0.999984,
+          "word_is_final": true
+        },
+        {
+          "start": 9468,
+          "end": 9866,
+          "text": "more",
+          "confidence": 0.999996,
+          "word_is_final": true
+        },
+        {
+          "start": 9885,
+          "end": 10979,
+          "text": "information",
+          "confidence": 0.999986,
+          "word_is_final": true
+        },
+        {
+          "start": 10998,
+          "end": 11296,
+          "text": "and",
+          "confidence": 0.871669,
+          "word_is_final": true
+        },
+        {
+          "start": 11315,
+          "end": 11514,
+          "text": "to",
+          "confidence": 0.999994,
+          "word_is_final": true
+        },
+        {
+          "start": 11533,
+          "end": 11931,
+          "text": "find",
+          "confidence": 0.999993,
+          "word_is_final": true
+        },
+        {
+          "start": 11950,
+          "end": 12248,
+          "text": "out",
+          "confidence": 0.999984,
+          "word_is_final": true
+        },
+        {
+          "start": 12267,
+          "end": 12565,
+          "text": "how",
+          "confidence": 0.99999,
+          "word_is_final": true
+        },
+        {
+          "start": 12584,
+          "end": 12882,
+          "text": "you",
+          "confidence": 0.99998,
+          "word_is_final": true
+        },
+        {
+          "start": 12901,
+          "end": 13199,
+          "text": "can",
+          "confidence": 0.999956,
+          "word_is_final": true
+        },
+        {
+          "start": 13218,
+          "end": 14213,
+          "text": "volunteer,",
+          "confidence": 0.995228,
+          "word_is_final": true
+        },
+        {
+          "start": 14240,
+          "end": 15213,
+          "text": "please",
+          "confidence": 0.595752,
+          "word_is_final": true
+        },
+        {
+          "start": 15245,
+          "end": 16055,
+          "text": "visit",
+          "confidence": 0.999992,
+          "word_is_final": true
+        },
+        {
+          "start": 16087,
+          "end": 18195,
+          "text": "librivox.org.",
+          "confidence": 0.993829,
+          "word_is_final": true
+        },
+        {
+          "start": 18227,
+          "end": 19200,
+          "text": "That's",
+          "confidence": 0.99995,
+          "word_is_final": true
+        },
+        {
+          "start": 19232,
+          "end": 21664,
+          "text": "L-I-B-R-I-V-O-X",
+          "confidence": 0.957702,
+          "word_is_final": true
+        },
+        {
+          "start": 21696,
+          "end": 22182,
+          "text": "dot",
+          "confidence": 0.983814,
+          "word_is_final": true
+        },
+        {
+          "start": 22214,
+          "end": 22862,
+          "text": "org.",
+          "confidence": 0.993715,
+          "word_is_final": true
+        },
+        {
+          "start": 22894,
+          "end": 24353,
+          "text": "Recording",
+          "confidence": 0.999892,
+          "word_is_final": true
+        },
+        {
+          "start": 24385,
+          "end": 24709,
+          "text": "by",
+          "confidence": 0.999954,
+          "word_is_final": true
+        },
+        {
+          "start": 24741,
+          "end": 25551,
+          "text": "Annie",
+          "confidence": 0.999573,
+          "word_is_final": true
+        },
+        {
+          "start": 25583,
+          "end": 26718,
+          "text": "Coleman",
+          "confidence": 0.999931,
+          "word_is_final": true
+        },
+        {
+          "start": 26750,
+          "end": 27074,
+          "text": "in",
+          "confidence": 0.989497,
+          "word_is_final": true
+        },
+        {
+          "start": 27106,
+          "end": 27592,
+          "text": "St.",
+          "confidence": 0.98795,
+          "word_is_final": true
+        },
+        {
+          "start": 27624,
+          "end": 28597,
+          "text": "Louis,",
+          "confidence": 0.957025,
+          "word_is_final": true
+        },
+        {
+          "start": 28629,
+          "end": 30088,
+          "text": "Missouri.",
+          "confidence": 0.911315,
+          "word_is_final": true
+        }
+      ],
+      "turn_is_formatted": true,
+      "start_ms": 2240,
+      "end_ms": 30088
+    }
+  ]
+}
