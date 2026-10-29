@@ -20,13 +20,22 @@ This folder contains:
 
 ## Quick start
 
+Before you start:
+
+- Subscribe to the product on AWS Marketplace and copy the model package ARN for your region from
+  the Configuration step. The ARN ends in a hash and is specific to the region.
+- Have a SageMaker execution role (`AmazonSageMakerFullAccess`, plus read/write access to the S3
+  bucket you use for batch transform).
+- Set your region: `--region` on each example, or `AWS_DEFAULT_REGION` in the environment, to the
+  region of the ARN. Check the service quota for the instance type you deploy (see Deployment).
+
 ```bash
 pip install -r requirements.txt          # Python 3.12+
 
 python examples/deploy.py --model-package-arn <arn> --role-arn <sagemaker-execution-role-arn>
 python examples/stream_file.py universal-3-6-pro-streaming data/input/sample-10s.wav
 python examples/invoke_file.py universal-3-6-pro-streaming data/input/sample-10s.wav
-uv run examples/stream_mic.py universal-3-6-pro-streaming   # live from your microphone
+uv run examples/stream_mic.py universal-3-6-pro-streaming   # live from your microphone (needs uv: https://docs.astral.sh/uv/)
 
 python examples/deploy.py --delete
 ```
@@ -61,6 +70,9 @@ compatibility libraries. Check that your account has a quota for the instance ty
 The endpoint is `InService` once the weights are on the GPU and the model has warmed up; until then
 `/ping` answers 503. Marketplace model packages run with network isolation and cannot be deployed to
 Serverless Inference.
+
+To let SageMaker pick from several sizes, give the production variant an `InstancePools` list instead of
+a single `InstanceType`; `deploy.py --instance-type ml.g6e.xlarge,ml.g6e.2xlarge,ml.g6e.4xlarge` does this.
 
 ---
 
@@ -253,6 +265,8 @@ response format above. See [`examples/invoke_batch.py`](examples/invoke_batch.py
   concurrent records of up to 25 MB each.
 - A record must finish within `ModelClientConfig.InvocationsTimeoutInSeconds` (default 600, maximum
   3600); raise it for long recordings.
+- A job takes about 10 minutes before its first record, whatever the input size: the instance starts and
+  the weights load, as for an endpoint. Batch suits backlogs, not a handful of files.
 - Batch transform cannot set `CustomAttributes`. To pass options, store each file as a JSON envelope
   (`{"audio": "<base64>", "config": {...}}`) and run the job with `ContentType="application/json"`;
   [`data/input/batch-json/`](data/input/batch-json) has an example.
@@ -264,9 +278,11 @@ response format above. See [`examples/invoke_batch.py`](examples/invoke_batch.py
 The software charge is metered by the amount of audio processed, in units of **8 seconds of audio**
 (see the listing for the price per unit). A stream is billed for the duration of the audio sent to it
 from when the session begins until `Terminate` (for Opus and AAC, the duration the frames encode),
-reported as the stream runs; a whole-file request or batch record is billed for the file's duration. Each stream
+reported as the stream runs; a whole-file `InvokeEndpoint` request is billed for the file's duration. Each stream
 and request is rounded up to a whole unit. A request that fails is not billed; a stream that drops is
 billed for the audio it received. The AWS infrastructure charge for the instance is separate.
+
+Batch transform is priced differently: per instance-hour (see the listing), with no per-audio charge.
 
 Every stream and request also writes its usage to the container's CloudWatch logs (the endpoint's or
 the transform job's) in Embedded Metric
