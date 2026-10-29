@@ -86,6 +86,7 @@ ModelQueryString: sample_rate=16000&encoding=pcm_s16le&keyterms_prompt=["LibriVo
 | Audio | `BINARY` | Audio in the session's `encoding`. PCM: 20-1000 ms per message (50 ms is typical). Send at real time, as it is captured. |
 | `{"type": "Terminate"}` | `UTF8` | Flush the last turn and end the session; the server replies with `Termination`. |
 | `{"type": "ForceEndpoint"}` | `UTF8` | End the current turn now. |
+| `{"type": "KeepAlive"}` | `UTF8` | Resets the `inactivity_timeout` timer; only needed when that parameter is set and no audio is being sent. Without it a session stays open until `Terminate` or the 30-minute stream limit, and the container answers SageMaker's transport pings itself. |
 | `{"type": "UpdateConfiguration", ...}` | `UTF8` | Change turn-detection settings, `keyterms_prompt` or `prompt` mid-session. |
 
 ### Receiving
