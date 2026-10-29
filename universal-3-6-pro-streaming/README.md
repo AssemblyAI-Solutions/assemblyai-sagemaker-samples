@@ -87,7 +87,7 @@ ModelQueryString: sample_rate=16000&encoding=pcm_s16le&keyterms_prompt=["LibriVo
 | `{"type": "Terminate"}` | `UTF8` | Flush the last turn and end the session; the server replies with `Termination`. |
 | `{"type": "ForceEndpoint"}` | `UTF8` | End the current turn now. |
 | `{"type": "KeepAlive"}` | `UTF8` | Resets the `inactivity_timeout` timer; only needed when that parameter is set and no audio is being sent. Without it a session stays open until `Terminate` or the 30-minute stream limit, and the container answers SageMaker's transport pings itself. |
-| `{"type": "UpdateConfiguration", ...}` | `UTF8` | Change turn-detection settings, `keyterms_prompt` or `prompt` mid-session. |
+| `{"type": "UpdateConfiguration", ...}` | `UTF8` | Change turn-detection settings, `keyterms_prompt`, `prompt` or `session_heartbeat` mid-session. |
 
 ### Receiving
 
@@ -99,6 +99,7 @@ is a complete session):
 | `Begin` | The session is open; carries the session `id` and its effective `configuration`. |
 | `SpeechStarted` | Speech was detected; carries its `timestamp` (ms into the audio). |
 | `Turn` | A transcript update. `end_of_turn: false` is a partial that will change; `end_of_turn: true` is the final, formatted text of that turn. `turn_order` numbers the turns; `words` carries per-word `start`/`end` (ms) and `confidence`. |
+| `Heartbeat` | Every 5 seconds of wall-clock time while `session_heartbeat` is on, during speech and silence: `total_audio_received_ms`, `total_duration_ms`, `realtime_factor` (audio received over wall-clock time since the previous heartbeat; about 1.0 when the client streams at real time) and `max_speech_probability` over that window. A liveness signal that also shows whether audio is being delivered at pace. |
 | `Termination` | The session ended; carries `audio_duration_seconds`. |
 | `Error` | The session was refused or failed; carries `error_code` and `error`. |
 
@@ -127,6 +128,7 @@ Use one SDK client (one HTTP/2 connection) per concurrent stream; streams that s
 | `include_partial_turns` | `false` to receive final turns only. |
 | `continuous_partials` | `true` to keep sending partials through long turns; `false` for one early partial per turn. |
 | `inactivity_timeout` | Seconds of inactivity (5-3600) before the session ends; off by default. |
+| `session_heartbeat` | `true` to receive a `Heartbeat` message every 5 seconds; off by default. Can also be switched on or off mid-session with `UpdateConfiguration`. |
 
 Invalid values are refused with the streaming API's usual `Error` message and close code `3006`,
 naming the problem. Parameter names that are not recognised are ignored, so check the spelling of
