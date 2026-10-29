@@ -87,7 +87,7 @@ ModelQueryString: sample_rate=16000&encoding=pcm_s16le&keyterms_prompt=["LibriVo
 | `{"type": "Terminate"}` | `UTF8` | Flush the last turn and end the session; the server replies with `Termination`. |
 | `{"type": "ForceEndpoint"}` | `UTF8` | End the current turn now. |
 | `{"type": "KeepAlive"}` | `UTF8` | Resets the `inactivity_timeout` timer; only needed when that parameter is set and no audio is being sent. Without it a session stays open until `Terminate` or the 30-minute stream limit, and the container answers SageMaker's transport pings itself. |
-| `{"type": "UpdateConfiguration", ...}` | `UTF8` | Change turn-detection settings, `keyterms_prompt` or `prompt` mid-session. |
+| `{"type": "UpdateConfiguration", ...}` | `UTF8` | Change `min_turn_silence`, `max_turn_silence`, `end_of_turn_confidence_threshold`, `interruption_delay`, `vad_threshold`, `keyterms_prompt`, `prompt`, `agent_context` or `session_heartbeat` mid-session. |
 
 ### Receiving
 
@@ -99,6 +99,7 @@ is a complete session):
 | `Begin` | The session is open; carries the session `id` and its effective `configuration`. |
 | `SpeechStarted` | Speech was detected; carries its `timestamp` (ms into the audio). |
 | `Turn` | A transcript update. `end_of_turn: false` is a partial that will change; `end_of_turn: true` is the final, formatted text of that turn. `turn_order` numbers the turns; `words` carries per-word `start`/`end` (ms) and `confidence`. |
+| `Heartbeat` | Every 5 seconds of wall-clock time while `session_heartbeat` is on, during speech and silence: `total_audio_received_ms`, `total_duration_ms`, `realtime_factor` (audio received over wall-clock time since the previous heartbeat; about 1.0 when the client streams at real time) and `max_speech_probability` over that window. A liveness signal that also shows whether audio is being delivered at pace. |
 | `Termination` | The session ended; carries `audio_duration_seconds`. |
 | `Error` | The session was refused or failed; carries `error_code` and `error`. |
 
@@ -122,11 +123,14 @@ Use one SDK client (one HTTP/2 connection) per concurrent stream; streams that s
 | `agent_context` | What a voice agent just said, to improve recognition of the reply (up to 1750 characters). |
 | `mode` | `balanced` (default), `min_latency` or `max_accuracy`. |
 | `end_of_turn_confidence_threshold` | Turn-detection confidence needed to end a turn on a short silence. |
-| `min_end_of_turn_silence_when_confident` | Silence (ms) before ending a confident turn. |
-| `max_turn_silence` | Silence (ms) after which a turn always ends. |
+| `min_turn_silence` | Silence (ms) before the model runs an end-of-turn check; the turn ends if it reads as complete, otherwise it stays open. Alias `min_end_of_turn_silence_when_confident`. Raise it when an entity such as a number or an address is expected. |
+| `max_turn_silence` | Silence (ms) after which a turn always ends, regardless of content; also the limit on how long an entity in progress is held open. |
+| `interruption_delay` | How long (ms, 0-1000) after speech begins the first partial is emitted; lower for aggressive barge-in, higher for more confident first partials. Default set by `mode` (`min_latency` 0, `balanced` 500, `max_accuracy` 500). |
+| `vad_threshold` | Confidence (0-1) needed to treat an audio frame as speech; default 0.2. Raise it in noisy environments or when the agent's own audio triggers interruptions, lower it for quiet speech. |
 | `include_partial_turns` | `false` to receive final turns only. |
 | `continuous_partials` | `true` to keep sending partials through long turns; `false` for one early partial per turn. |
 | `inactivity_timeout` | Seconds of inactivity (5-3600) before the session ends; off by default. |
+| `session_heartbeat` | `true` to receive a `Heartbeat` message every 5 seconds; off by default. Can also be switched on or off mid-session with `UpdateConfiguration`. |
 
 Invalid values are refused with the streaming API's usual `Error` message and close code `3006`,
 naming the problem. Parameter names that are not recognised are ignored, so check the spelling of
