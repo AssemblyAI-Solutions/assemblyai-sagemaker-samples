@@ -6,7 +6,11 @@ and whole-file transcription (InvokeEndpoint).
 
 Usage:
     python deploy.py --model-package-arn <arn> --role-arn <arn> [--instance-type ml.g6e.xlarge]
+    python deploy.py --model-package-arn <arn> --role-arn <arn> --instance-type ml.g6e.xlarge,ml.g6e.2xlarge,ml.g6e.4xlarge
     python deploy.py --delete [--name universal-3-6-pro-streaming]
+
+Several comma-separated instance types become an InstancePools variant, which
+SageMaker fills in that order of preference.
 """
 import argparse
 import time
@@ -37,7 +41,8 @@ def main():
     p.add_argument("--model-package-arn", help="from your AWS Marketplace subscription")
     p.add_argument("--role-arn", help="SageMaker execution role")
     p.add_argument("--instance-type", default="ml.g6e.xlarge",
-                   help="ml.g6e.xlarge, ml.g6e.2xlarge, ml.g6e.4xlarge, ml.g7e.2xlarge or ml.g7e.4xlarge (one GPU each)")
+                   help="ml.g6e.xlarge, ml.g6e.2xlarge, ml.g6e.4xlarge, ml.g7e.2xlarge or ml.g7e.4xlarge (one GPU each); "
+                        "a comma-separated list is tried in order (InstancePools)")
     p.add_argument("--name", default="universal-3-6-pro-streaming")
     p.add_argument("--region", default=None)
     p.add_argument("--delete", action="store_true", help="delete the endpoint, its config and the model")
@@ -57,29 +62,34 @@ def main():
         # Required for AWS Marketplace model packages.
         EnableNetworkIsolation=True,
     )
-    sm.create_endpoint_config(
-        EndpointConfigName=args.name,
-        ProductionVariants=[{
-            "VariantName": "primary",
-            "ModelName": args.name,
-            "InitialInstanceCount": 1,
-            "InstanceType": args.instance_type,
-            "InferenceAmiVersion": INFERENCE_AMI_VERSION,
-            # The weights are copied to the instance and loaded onto the GPU
-            # at startup; allow ample time for both.
-            "ModelDataDownloadTimeoutInSeconds": 1800,
-            "ContainerStartupHealthCheckTimeoutInSeconds": 1800,
-        }],
-    )
+    types = [t.strip() for t in args.instance_type.split(",") if t.strip()]
+    variant = {
+        "VariantName": "primary",
+        "ModelName": args.name,
+        "InitialInstanceCount": 1,
+        "InferenceAmiVersion": INFERENCE_AMI_VERSION,
+        # The weights are copied to the instance and loaded onto the GPU
+        # at startup; allow ample time for both.
+        "ModelDataDownloadTimeoutInSeconds": 1800,
+        "ContainerStartupHealthCheckTimeoutInSeconds": 1800,
+    }
+    if len(types) == 1:
+        variant["InstanceType"] = types[0]
+    else:
+        # Tried in order; needs at least two entries.
+        variant["InstancePools"] = [{"InstanceType": t, "Priority": i + 1} for i, t in enumerate(types)]
+    sm.create_endpoint_config(EndpointConfigName=args.name, ProductionVariants=[variant])
     sm.create_endpoint(EndpointName=args.name, EndpointConfigName=args.name)
-    print(f"Creating endpoint {args.name} on {args.instance_type}...")
+    print(f"Creating endpoint {args.name} on {' or '.join(types)}...")
 
     t0 = time.time()
     while True:
         d = sm.describe_endpoint(EndpointName=args.name)
         status = d["EndpointStatus"]
         if status == "InService":
-            print(f"InService after {time.time() - t0:.0f}s")
+            v = d["ProductionVariants"][0]
+            landed = v.get("InstanceType") or (v.get("InstancePools") or [{}])[0].get("InstanceType") or types[0]
+            print(f"InService after {time.time() - t0:.0f}s on {landed}")
             return
         if status in ("Failed", "OutOfService"):
             raise SystemExit(f"{status}: {d.get('FailureReason', '')}")
