@@ -16,10 +16,10 @@ import time
 
 import boto3
 
-# Batch hosts top out at NVIDIA driver 535. The container enables CUDA
-# compatibility libraries itself, so the platform must leave them alone.
+# Batch hosts top out at NVIDIA driver 535; the container enables CUDA
+# compatibility libraries itself. Pass no Environment: SageMaker rejects it
+# on a Marketplace package's transform job.
 TRANSFORM_AMI_VERSION = "al2-ami-sagemaker-batch-gpu-535"
-ENVIRONMENT = {"SAGEMAKER_CUDA_COMPAT_DISABLED": "true"}
 
 
 def main():
@@ -43,7 +43,6 @@ def main():
         BatchStrategy="SingleRecord",
         # How long one record may take; raise it for long recordings (max 3600).
         ModelClientConfig={"InvocationsTimeoutInSeconds": 600, "InvocationsMaxRetries": 0},
-        Environment=ENVIRONMENT,
         TransformInput={
             "DataSource": {"S3DataSource": {"S3DataType": "S3Prefix", "S3Uri": args.input}},
             "ContentType": args.content_type,
