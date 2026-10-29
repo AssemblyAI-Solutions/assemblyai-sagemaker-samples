@@ -45,17 +45,18 @@ python examples/deploy.py --delete
 
 | | |
 |---|---|
-| Real-time instance types | `ml.g6e.4xlarge`, `ml.g5.2xlarge` |
+| Real-time instance types | `ml.g6e.xlarge`, `ml.g6e.2xlarge`, `ml.g6e.4xlarge` (NVIDIA L40S); `ml.g7e.2xlarge`, `ml.g7e.4xlarge` (NVIDIA RTX PRO 6000); one GPU each |
 | Batch transform instance type | `ml.g5.2xlarge` |
-| `InferenceAmiVersion` (real-time) | `al2023-ami-sagemaker-inference-gpu-4-1` - recommended on all instances, **required on `ml.g5`** |
-| `TransformAmiVersion` (batch) | `al2-ami-sagemaker-batch-gpu-535`, with `SAGEMAKER_CUDA_COMPAT_DISABLED=true` in the job's `Environment` |
+| `InferenceAmiVersion` (real-time) | `al2023-ami-sagemaker-inference-gpu-4-1` - recommended |
+| `TransformAmiVersion` (batch) | `al2-ami-sagemaker-batch-gpu-535`; pass no `Environment` |
 | `ContainerStartupHealthCheckTimeoutInSeconds` | `1800` |
 | `ModelDataDownloadTimeoutInSeconds` | `1800` |
 
 The model needs CUDA 13 (NVIDIA driver 580 or later, or 535+ with CUDA compatibility libraries,
 which the container enables itself). The `al2023-ami-sagemaker-inference-gpu-4-1` AMI provides
-driver 580. `ml.g5` hosts default to an older driver that the container cannot run on, so on `ml.g5`
-the endpoint fails its health check without that AMI.
+driver 580, so the container runs natively; on an older default driver it falls back to the
+compatibility libraries. Check that your account has a quota for the instance type (for example
+`ml.g6e.xlarge for endpoint usage`); new accounts often start at 0.
 
 The endpoint is `InService` once the weights are on the GPU and the model has warmed up; until then
 `/ping` answers 503. Marketplace model packages run with network isolation and cannot be deployed to
@@ -154,6 +155,10 @@ ignored:
 | Audio per message | 20-1000 ms |
 | Concurrent streams per instance | 32 by default (`MAX_OPEN_STREAMS`, see [Configuration](#configuration)) |
 
+Every supported instance has one GPU, so capacity scales with instance count, not instance size:
+plan on about 16 concurrent streams per instance for latency-sensitive voice agents and up to 32 for
+throughput, and add instances (or SageMaker auto scaling) beyond that.
+
 ---
 
 ## Whole-file transcription
@@ -236,8 +241,9 @@ Each S3 object is one record; its result is written to the output prefix as `<fi
 response format above. See [`examples/invoke_batch.py`](examples/invoke_batch.py).
 
 - Set `SplitType` to `"None"` so a file is never split.
-- Set `TransformAmiVersion="al2-ami-sagemaker-batch-gpu-535"` and pass
-  `Environment={"SAGEMAKER_CUDA_COMPAT_DISABLED": "true"}`.
+- Set `TransformAmiVersion="al2-ami-sagemaker-batch-gpu-535"` and pass no `Environment`: SageMaker
+  rejects it on a Marketplace package's job, and the container enables CUDA compatibility itself.
+- The job needs the `ml.g5.2xlarge for transform job usage` quota in your account.
 - Leave `MaxConcurrentTransforms` and `MaxPayloadInMB` unset to use the container's defaults: 4
   concurrent records of up to 25 MB each.
 - A record must finish within `ModelClientConfig.InvocationsTimeoutInSeconds` (default 600, maximum

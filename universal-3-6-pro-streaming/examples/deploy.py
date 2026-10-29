@@ -5,7 +5,7 @@ The endpoint serves both live streaming (InvokeEndpointWithBidirectionalStream)
 and whole-file transcription (InvokeEndpoint).
 
 Usage:
-    python deploy.py --model-package-arn <arn> --role-arn <arn> [--instance-type ml.g6e.4xlarge]
+    python deploy.py --model-package-arn <arn> --role-arn <arn> [--instance-type ml.g6e.xlarge]
     python deploy.py --delete [--name universal-3-6-pro-streaming]
 """
 import argparse
@@ -14,7 +14,8 @@ import time
 import boto3
 
 # Recommended. Provides NVIDIA driver 580 (CUDA 13), which the model runs on
-# natively. Required on ml.g5 instances, whose default driver is too old.
+# natively; on an older default driver the container falls back to CUDA
+# compatibility libraries.
 INFERENCE_AMI_VERSION = "al2023-ami-sagemaker-inference-gpu-4-1"
 
 
@@ -35,7 +36,8 @@ def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--model-package-arn", help="from your AWS Marketplace subscription")
     p.add_argument("--role-arn", help="SageMaker execution role")
-    p.add_argument("--instance-type", default="ml.g6e.4xlarge", help="ml.g6e.4xlarge or ml.g5.2xlarge")
+    p.add_argument("--instance-type", default="ml.g6e.xlarge",
+                   help="ml.g6e.xlarge, ml.g6e.2xlarge, ml.g6e.4xlarge, ml.g7e.2xlarge or ml.g7e.4xlarge (one GPU each)")
     p.add_argument("--name", default="universal-3-6-pro-streaming")
     p.add_argument("--region", default=None)
     p.add_argument("--delete", action="store_true", help="delete the endpoint, its config and the model")
