@@ -91,6 +91,17 @@ so existing AssemblyAI streaming code ports directly.
 ModelQueryString: sample_rate=16000&encoding=pcm_s16le&keyterms_prompt=["LibriVox"]
 ```
 
+`ModelQueryString` is limited to 2,048 characters once URL-encoded (a SageMaker limit), and encoding
+roughly doubles a JSON list: quotes, brackets, commas and spaces take three characters each. A long
+`keyterms_prompt` list or `prompt` may not fit, and SageMaker refuses the request before it reaches the
+endpoint. Put the short settings (`sample_rate`, `encoding`, `language_codes`, `mode`) in the query string
+and send the long ones in an `UpdateConfiguration` message as the first message on the stream, before any
+audio. It has no such limit and applies to the whole session:
+
+```json
+{"type": "UpdateConfiguration", "keyterms_prompt": ["LibriVox", "SageMaker"], "prompt": "..."}
+```
+
 ### Sending
 
 | Payload | `DataType` | Contents |
@@ -99,7 +110,7 @@ ModelQueryString: sample_rate=16000&encoding=pcm_s16le&keyterms_prompt=["LibriVo
 | `{"type": "Terminate"}` | `UTF8` | Flush the last turn and end the session; the server replies with `Termination`. |
 | `{"type": "ForceEndpoint"}` | `UTF8` | End the current turn now. |
 | `{"type": "KeepAlive"}` | `UTF8` | Resets the `inactivity_timeout` timer; only needed when that parameter is set and no audio is being sent. Without it a session stays open until `Terminate` or the 30-minute stream limit, and the container answers SageMaker's transport pings itself. |
-| `{"type": "UpdateConfiguration", ...}` | `UTF8` | Change `min_turn_silence`, `max_turn_silence`, `end_of_turn_confidence_threshold`, `interruption_delay`, `vad_threshold`, `keyterms_prompt`, `prompt`, `agent_context` or `session_heartbeat` mid-session. |
+| `{"type": "UpdateConfiguration", ...}` | `UTF8` | Change `min_turn_silence`, `max_turn_silence`, `interruption_delay`, `vad_threshold`, `keyterms_prompt`, `prompt`, `agent_context` or `session_heartbeat` mid-session. |
 
 ### Receiving
 
@@ -134,8 +145,7 @@ Use one SDK client (one HTTP/2 connection) per concurrent stream; streams that s
 | `prompt` | Free-text context about the audio (up to 1750 characters). |
 | `agent_context` | What a voice agent just said, to improve recognition of the reply (up to 1750 characters). |
 | `mode` | `balanced` (default), `min_latency` or `max_accuracy`. |
-| `end_of_turn_confidence_threshold` | Turn-detection confidence needed to end a turn on a short silence. |
-| `min_turn_silence` | Silence (ms) before the model runs an end-of-turn check; the turn ends if it reads as complete, otherwise it stays open. Alias `min_end_of_turn_silence_when_confident`. Raise it when an entity such as a number or an address is expected. |
+| `min_turn_silence` | Silence (ms) before the model runs an end-of-turn check; the turn ends if it reads as complete, otherwise it stays open. Raise it when an entity such as a number or an address is expected. |
 | `max_turn_silence` | Silence (ms) after which a turn always ends, regardless of content; also the limit on how long an entity in progress is held open. |
 | `interruption_delay` | How long (ms, 0-1000) after speech begins the first partial is emitted; lower for aggressive barge-in, higher for more confident first partials. Default set by `mode` (`min_latency` 0, `balanced` 500, `max_accuracy` 500). |
 | `vad_threshold` | Confidence (0-1) needed to treat an audio frame as speech; default 0.2. Raise it in noisy environments or when the agent's own audio triggers interruptions, lower it for quiet speech. |
@@ -169,6 +179,7 @@ ignored:
 | Limit | Value |
 |-------|-------|
 | Stream duration | 30 minutes per stream (a SageMaker limit); reconnect to continue |
+| `ModelQueryString` | 2,048 characters, URL-encoded (a SageMaker limit); send long `keyterms_prompt`, `prompt` or `agent_context` in `UpdateConfiguration` |
 | Audio per message | 20-1000 ms |
 | Concurrent streams per instance | 32 by default (`MAX_OPEN_STREAMS`, see [Configuration](#configuration)) |
 
