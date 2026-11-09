@@ -54,7 +54,7 @@ python examples/deploy.py --delete
 
 | | |
 |---|---|
-| Real-time instance types | `ml.g6e.xlarge`, `ml.g6e.2xlarge`, `ml.g6e.4xlarge` (NVIDIA L40S); `ml.g7e.2xlarge`, `ml.g7e.4xlarge` (NVIDIA RTX PRO 6000); one GPU each |
+| Real-time instance types | One GPU: `ml.g6e.xlarge`, `ml.g6e.2xlarge`, `ml.g6e.4xlarge` (NVIDIA L40S); `ml.g7e.2xlarge`, `ml.g7e.4xlarge` (NVIDIA RTX PRO 6000). Several GPUs: `ml.g7e.24xlarge` (4x RTX PRO 6000) |
 | Batch transform instance type | `ml.g5.2xlarge` |
 | `InferenceAmiVersion` (real-time) | `al2023-ami-sagemaker-inference-gpu-4-1` - recommended |
 | `TransformAmiVersion` (batch) | `al2-ami-sagemaker-batch-gpu-535`; pass no `Environment` |
@@ -73,6 +73,11 @@ Serverless Inference.
 
 To let SageMaker pick from several sizes, give the production variant an `InstancePools` list instead of
 a single `InstanceType`; `deploy.py --instance-type ml.g6e.xlarge,ml.g6e.2xlarge,ml.g6e.4xlarge` does this.
+
+On an instance with several GPUs, the container runs one copy of the model on each GPU and sends each
+new stream or request to the GPU with the fewest open sessions; nothing else changes. The endpoint is
+`InService` once every GPU is ready. To use only some of the GPUs, set `CUDA_VISIBLE_DEVICES` (see
+[Configuration](#configuration)).
 
 ---
 
@@ -181,11 +186,12 @@ ignored:
 | Stream duration | 30 minutes per stream (a SageMaker limit); reconnect to continue |
 | `ModelQueryString` | 2,048 characters, URL-encoded (a SageMaker limit); send long `keyterms_prompt`, `prompt` or `agent_context` in `UpdateConfiguration` |
 | Audio per message | 20-1000 ms |
-| Concurrent streams per instance | 32 by default (`MAX_OPEN_STREAMS`, see [Configuration](#configuration)) |
+| Concurrent streams per GPU | 32 by default (`MAX_OPEN_STREAMS`, see [Configuration](#configuration)); an instance with N GPUs takes N times as many |
 
-Every supported instance has one GPU, so capacity scales with instance count, not instance size:
-plan on about 16 concurrent streams per instance for latency-sensitive voice agents and up to 32 for
-throughput, and add instances (or SageMaker auto scaling) beyond that.
+Capacity is per GPU. On L40S, plan on about 16 concurrent streams per GPU for latency-sensitive voice
+agents and up to 32 for throughput. An RTX PRO 6000 sustains well above the default of 32: raise
+`MAX_OPEN_STREAMS` to the level your latency target allows, and contact AssemblyAI for sizing guidance.
+Beyond one instance, add instances or use SageMaker auto scaling.
 
 ---
 
@@ -286,12 +292,17 @@ response format above. See [`examples/invoke_batch.py`](examples/invoke_batch.py
 
 ## Billing and usage metrics
 
-The software charge is metered by the amount of audio processed, in units of **8 seconds of audio**
-(see the listing for the price per unit). A stream is billed for the duration of the audio sent to it
-from when the session begins until `Terminate` (for Opus and AAC, the duration the frames encode),
-reported as the stream runs; a whole-file `InvokeEndpoint` request is billed for the file's duration. Each stream
-and request is rounded up to a whole unit. A request that fails is not billed; a stream that drops is
-billed for the audio it received. The AWS infrastructure charge for the instance is separate.
+The software charge is metered by the amount of audio processed, in units of **one hour of audio**
+(see the listing for the price per unit, which is the price per audio hour). Usage is counted to the
+millisecond and billed as a decimal number of units, never rounded up.
+
+- A stream is billed for the duration of the audio sent to it from when the session begins until
+  `Terminate` (for Opus and AAC, the duration the frames encode), reported as the stream runs.
+- A whole-file `InvokeEndpoint` request is billed for the file's duration, at least 0.000001 unit.
+- A session that is refused, or that fails before its first transcript, is not billed. A request that
+  fails is not billed. A stream that drops after transcribing is billed for the audio it received.
+
+The AWS infrastructure charge for the instance is separate.
 
 Batch transform is priced differently: per instance-hour (see the listing), with no per-audio charge.
 
@@ -301,8 +312,8 @@ Format, so you can graph, alarm on and reconcile usage in your own account:
 
 | | |
 |---|---|
-| Namespace | `AssemblyAI/SageMakerStreaming` |
-| Metrics | `ConsumedUnits` (billed units), `AudioDurationSeconds` |
+| Namespace | `AssemblyAI/Universal-3.6-Pro-Realtime` |
+| Metrics | `ConsumedUnits` (billed units, in audio hours), `AudioDurationSeconds`, `UnmeteredAudioSeconds` (audio whose usage could not be reported to SageMaker, so was not billed; normally 0) |
 | Dimension | `Operation` = `stream` or `file` |
 
 The container sends no data outside your account.
@@ -316,7 +327,8 @@ Everything has a default. You can override these through the `Environment` of th
 
 | Variable | Default | |
 |----------|---------|---|
-| `MAX_OPEN_STREAMS` | `32` | Concurrent streams per instance; further streams are refused. |
+| `MAX_OPEN_STREAMS` | `32` | Concurrent streams per GPU; further streams are refused. |
+| `CUDA_VISIBLE_DEVICES` | all GPUs | The GPUs to serve on, e.g. `0,1`; one copy of the model runs on each. |
 | `SM_MAX_CONCURRENT_TRANSFORMS` | `4` | Batch transform concurrency the container advertises. |
 | `SM_BATCH_MAX_PAYLOAD_MB` | `25` | Batch record size the container advertises (concurrency x size must be at most 100). |
 | `SM_MAX_PAYLOAD_MB` | `100` | Largest whole-file request. |

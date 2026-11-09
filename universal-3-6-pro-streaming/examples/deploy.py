@@ -41,7 +41,8 @@ def main():
     p.add_argument("--model-package-arn", help="from your AWS Marketplace subscription")
     p.add_argument("--role-arn", help="SageMaker execution role")
     p.add_argument("--instance-type", default="ml.g6e.xlarge",
-                   help="ml.g6e.xlarge, ml.g6e.2xlarge, ml.g6e.4xlarge, ml.g7e.2xlarge or ml.g7e.4xlarge (one GPU each); "
+                   help="ml.g6e.xlarge, ml.g6e.2xlarge, ml.g6e.4xlarge, ml.g7e.2xlarge, ml.g7e.4xlarge (one GPU) "
+                        "or ml.g7e.24xlarge (4 GPUs); "
                         "a comma-separated list is tried in order (InstancePools)")
     p.add_argument("--name", default="universal-3-6-pro-streaming")
     p.add_argument("--region", default=None)
