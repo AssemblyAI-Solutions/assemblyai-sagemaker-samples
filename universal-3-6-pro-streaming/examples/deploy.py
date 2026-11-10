@@ -5,8 +5,8 @@ The endpoint serves both live streaming (InvokeEndpointWithBidirectionalStream)
 and whole-file transcription (InvokeEndpoint).
 
 Usage:
-    python deploy.py --model-package-arn <arn> --role-arn <arn> [--instance-type ml.g6e.xlarge]
-    python deploy.py --model-package-arn <arn> --role-arn <arn> --instance-type ml.g6e.xlarge,ml.g6e.2xlarge,ml.g6e.4xlarge
+    python deploy.py --model-package-arn <arn> --role-arn <arn> [--instance-type ml.g7e.2xlarge]
+    python deploy.py --model-package-arn <arn> --role-arn <arn> --instance-type ml.g7e.2xlarge,ml.g7e.4xlarge,ml.g6e.4xlarge
     python deploy.py --delete [--name universal-3-6-pro-streaming]
 
 Several comma-separated instance types become an InstancePools variant, which
@@ -40,9 +40,9 @@ def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--model-package-arn", help="from your AWS Marketplace subscription")
     p.add_argument("--role-arn", help="SageMaker execution role")
-    p.add_argument("--instance-type", default="ml.g6e.xlarge",
-                   help="ml.g6e.xlarge, ml.g6e.2xlarge, ml.g6e.4xlarge, ml.g7e.2xlarge or ml.g7e.4xlarge (one GPU each); "
-                        "a comma-separated list is tried in order (InstancePools)")
+    p.add_argument("--instance-type", default="ml.g7e.2xlarge",
+                   help="any supported type, e.g. ml.g7e.2xlarge (one GPU) or ml.g7e.24xlarge (4 GPUs); "
+                        "see the README for the list. A comma-separated list is tried in order (InstancePools)")
     p.add_argument("--name", default="universal-3-6-pro-streaming")
     p.add_argument("--region", default=None)
     p.add_argument("--delete", action="store_true", help="delete the endpoint, its config and the model")
