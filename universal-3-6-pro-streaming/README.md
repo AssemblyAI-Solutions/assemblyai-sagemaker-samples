@@ -54,7 +54,7 @@ python examples/deploy.py --delete
 
 | | |
 |---|---|
-| Real-time instance types | One GPU: `ml.g6e.xlarge`, `ml.g6e.2xlarge`, `ml.g6e.4xlarge` (NVIDIA L40S); `ml.g7e.2xlarge`, `ml.g7e.4xlarge` (NVIDIA RTX PRO 6000). Several GPUs: `ml.g7e.24xlarge` (4x RTX PRO 6000) |
+| Real-time instance types | One GPU: `ml.g7e.2xlarge`, `ml.g7e.4xlarge` (NVIDIA RTX PRO 6000); `ml.g6e.xlarge`, `ml.g6e.2xlarge`, `ml.g6e.4xlarge` (NVIDIA L40S); `ml.g5.xlarge`, `ml.g5.2xlarge`, `ml.g5.4xlarge` (NVIDIA A10G); `ml.p5.4xlarge` (NVIDIA H100). Several GPUs: `ml.g7e.12xlarge` (2x RTX PRO 6000), `ml.g7e.24xlarge` (4x RTX PRO 6000), `ml.g6e.12xlarge`, `ml.g6e.24xlarge` (4x L40S), `ml.g6e.48xlarge` (8x L40S). `ml.g7e.2xlarge` is the recommended starting point |
 | Batch transform instance type | `ml.g5.2xlarge` |
 | `InferenceAmiVersion` (real-time) | `al2023-ami-sagemaker-inference-gpu-4-1` - recommended |
 | `TransformAmiVersion` (batch) | `al2-ami-sagemaker-batch-gpu-535`; pass no `Environment` |
@@ -65,19 +65,19 @@ The model needs CUDA 13 (NVIDIA driver 580 or later, or 535+ with CUDA compatibi
 which the container enables itself). The `al2023-ami-sagemaker-inference-gpu-4-1` AMI provides
 driver 580, so the container runs natively; on an older default driver it falls back to the
 compatibility libraries. Check that your account has a quota for the instance type (for example
-`ml.g6e.xlarge for endpoint usage`); new accounts often start at 0.
+`ml.g7e.2xlarge for endpoint usage`); new accounts often start at 0.
 
 The endpoint is `InService` once the weights are on the GPU and the model has warmed up; until then
 `/ping` answers 503. Marketplace model packages run with network isolation and cannot be deployed to
 Serverless Inference.
 
 To let SageMaker pick from several sizes, give the production variant an `InstancePools` list instead of
-a single `InstanceType`; `deploy.py --instance-type ml.g6e.xlarge,ml.g6e.2xlarge,ml.g6e.4xlarge` does this.
+a single `InstanceType`; `deploy.py --instance-type ml.g7e.2xlarge,ml.g7e.4xlarge,ml.g6e.4xlarge` does this.
 
 On an instance with several GPUs, the container runs one copy of the model on each GPU and sends each
 new stream or request to the GPU with the fewest open sessions; nothing else changes. The endpoint is
-`InService` once every GPU is ready. To use only some of the GPUs, set `CUDA_VISIBLE_DEVICES` (see
-[Configuration](#configuration)).
+`InService` once every GPU is ready, so a multi-GPU instance takes longer to start. To use only some of the
+GPUs, set `CUDA_VISIBLE_DEVICES` (see [Configuration](#configuration)).
 
 ---
 
@@ -136,6 +136,8 @@ Python SDK raises from `receive()`, **including after a normal `Termination`**. 
 successful if `Termination` arrived; after an `Error`, the `ModelStreamError` is how the session ends.
 
 Use one SDK client (one HTTP/2 connection) per concurrent stream; streams that share a client can stall.
+Retry a stream that fails to open with HTTP 424: under heavy load SageMaker occasionally fails to
+connect the stream or its metering channel to the container.
 
 ### Connection parameters
 
@@ -188,10 +190,15 @@ ignored:
 | Audio per message | 20-1000 ms |
 | Concurrent streams per GPU | 32 by default (`MAX_OPEN_STREAMS`, see [Configuration](#configuration)); an instance with N GPUs takes N times as many |
 
-Capacity is per GPU. On L40S, plan on about 16 concurrent streams per GPU for latency-sensitive voice
-agents and up to 32 for throughput. An RTX PRO 6000 sustains well above the default of 32: raise
-`MAX_OPEN_STREAMS` to the level your latency target allows, and contact AssemblyAI for sizing guidance.
-Beyond one instance, add instances or use SageMaker auto scaling.
+Capacity is per GPU. Recommended concurrent streams per GPU for latency-sensitive voice agents:
+
+| GPU | Streams per GPU |
+|-----|-----------------|
+| RTX PRO 6000 (`ml.g7e`) | 64 to 96; set `MAX_OPEN_STREAMS` accordingly, for example `96` (an `ml.g7e.24xlarge` then takes up to 384) |
+| L40S (`ml.g6e`) | 32 on `ml.g6e.4xlarge`, `ml.g6e.24xlarge` and `ml.g6e.48xlarge`; 24 on `ml.g6e.2xlarge` and `ml.g6e.12xlarge`; 16 on `ml.g6e.xlarge` (the CPUs per GPU set the limit) |
+| A10G (`ml.g5`) | 8; set `MAX_OPEN_STREAMS` to `8` |
+
+Scale up with a multi-GPU instance, or out with more instances and SageMaker auto scaling.
 
 ---
 
