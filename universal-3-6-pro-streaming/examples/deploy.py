@@ -7,10 +7,12 @@ and whole-file transcription (InvokeEndpoint).
 Usage:
     python deploy.py --model-package-arn <arn> --role-arn <arn> [--instance-type ml.g7e.2xlarge]
     python deploy.py --model-package-arn <arn> --role-arn <arn> --instance-type ml.g7e.2xlarge,ml.g7e.4xlarge,ml.g6e.4xlarge
+    python deploy.py --model-package-arn <arn> --role-arn <arn> --instance-count 2
     python deploy.py --delete [--name universal-3-6-pro-streaming]
 
 Several comma-separated instance types become an InstancePools variant, which
-SageMaker fills in that order of preference.
+SageMaker fills in that order of preference. The endpoint routes each new stream
+to the instance with the fewest open (LEAST_OUTSTANDING_REQUESTS).
 """
 import argparse
 import time
@@ -43,6 +45,7 @@ def main():
     p.add_argument("--instance-type", default="ml.g7e.2xlarge",
                    help="any supported type, e.g. ml.g7e.2xlarge (one GPU) or ml.g7e.24xlarge (4 GPUs); "
                         "see the README for the list. A comma-separated list is tried in order (InstancePools)")
+    p.add_argument("--instance-count", type=int, default=1)
     p.add_argument("--name", default="universal-3-6-pro-streaming")
     p.add_argument("--region", default=None)
     p.add_argument("--delete", action="store_true", help="delete the endpoint, its config and the model")
@@ -66,8 +69,11 @@ def main():
     variant = {
         "VariantName": "primary",
         "ModelName": args.name,
-        "InitialInstanceCount": 1,
+        "InitialInstanceCount": args.instance_count,
         "InferenceAmiVersion": INFERENCE_AMI_VERSION,
+        # Each new stream goes to the instance with the fewest open, so a
+        # stream is refused only once every instance is at MAX_OPEN_STREAMS.
+        "RoutingConfig": {"RoutingStrategy": "LEAST_OUTSTANDING_REQUESTS"},
         # The weights are copied to the instance and loaded onto the GPU
         # at startup; allow ample time for both.
         "ModelDataDownloadTimeoutInSeconds": 1800,
