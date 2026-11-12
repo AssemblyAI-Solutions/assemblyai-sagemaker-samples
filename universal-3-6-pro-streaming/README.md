@@ -77,8 +77,13 @@ a single `InstanceType`; `deploy.py --instance-type ml.g7e.2xlarge,ml.g7e.4xlarg
 
 Set `RoutingConfig` to `LEAST_OUTSTANDING_REQUESTS` on the production variant, as `deploy.py` does. SageMaker
 counts an open stream as outstanding for as long as it is open, so each new stream goes to the instance with
-the fewest open streams, and a stream is refused only once every instance is at its limit. Without it,
-SageMaker can send a new stream to a full instance while another has room.
+the fewest open streams. An instance is full at `MAX_OPEN_STREAMS` times its number of GPUs, so when every
+instance has the same number of GPUs, a stream is refused only once all of them are full. Without it, SageMaker
+can send a new stream to a full instance while another has room.
+
+The routing balances by stream count, not by capacity, so keep every type in `InstancePools` at the same number
+of GPUs (for example `ml.g7e.2xlarge` and `ml.g7e.4xlarge`, one GPU each). If one endpoint mixes a 1-GPU and a
+2-GPU instance, the 1-GPU instance fills first and refuses streams while the other still has room.
 
 On an instance with several GPUs, the container runs one copy of the model on each GPU and sends each
 new stream or request to the GPU with the fewest open sessions; nothing else changes. The endpoint is

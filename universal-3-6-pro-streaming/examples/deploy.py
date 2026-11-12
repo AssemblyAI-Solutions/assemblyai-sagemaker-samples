@@ -11,8 +11,9 @@ Usage:
     python deploy.py --delete [--name universal-3-6-pro-streaming]
 
 Several comma-separated instance types become an InstancePools variant, which
-SageMaker fills in that order of preference. The endpoint routes each new stream
-to the instance with the fewest open (LEAST_OUTSTANDING_REQUESTS).
+SageMaker fills in that order of preference; list types with the same number of
+GPUs. The endpoint routes each new stream to the instance with the fewest open
+(LEAST_OUTSTANDING_REQUESTS).
 """
 import argparse
 import time
@@ -71,8 +72,9 @@ def main():
         "ModelName": args.name,
         "InitialInstanceCount": args.instance_count,
         "InferenceAmiVersion": INFERENCE_AMI_VERSION,
-        # Each new stream goes to the instance with the fewest open, so a
-        # stream is refused only once every instance is at MAX_OPEN_STREAMS.
+        # Each new stream goes to the instance with the fewest open streams.
+        # An instance is full at MAX_OPEN_STREAMS per GPU; this balances by
+        # stream count, so list instance types with the same number of GPUs.
         "RoutingConfig": {"RoutingStrategy": "LEAST_OUTSTANDING_REQUESTS"},
         # The weights are copied to the instance and loaded onto the GPU
         # at startup; allow ample time for both.
