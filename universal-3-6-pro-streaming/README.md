@@ -60,6 +60,7 @@ python examples/deploy.py --delete
 | `TransformAmiVersion` (batch) | `al2-ami-sagemaker-batch-gpu-535`; pass no `Environment` |
 | `ContainerStartupHealthCheckTimeoutInSeconds` | `1800` |
 | `ModelDataDownloadTimeoutInSeconds` | `1800` |
+| `RoutingConfig` (real-time) | `{"RoutingStrategy": "LEAST_OUTSTANDING_REQUESTS"}` - recommended |
 
 The model needs CUDA 13 (NVIDIA driver 580 or later, or 535+ with CUDA compatibility libraries,
 which the container enables itself). The `al2023-ami-sagemaker-inference-gpu-4-1` AMI provides
@@ -73,6 +74,16 @@ Serverless Inference.
 
 To let SageMaker pick from several sizes, give the production variant an `InstancePools` list instead of
 a single `InstanceType`; `deploy.py --instance-type ml.g7e.2xlarge,ml.g7e.4xlarge,ml.g6e.4xlarge` does this.
+
+Set `RoutingConfig` to `LEAST_OUTSTANDING_REQUESTS` on the production variant, as `deploy.py` does. SageMaker
+counts an open stream as outstanding for as long as it is open, so each new stream goes to the instance with
+the fewest open streams. An instance is full at `MAX_OPEN_STREAMS` times its number of GPUs, so when every
+instance has the same number of GPUs, a stream is refused only once all of them are full. Without it, SageMaker
+can send a new stream to a full instance while another has room.
+
+The routing balances by stream count, not by capacity, so keep every type in `InstancePools` at the same number
+of GPUs (for example `ml.g7e.2xlarge` and `ml.g7e.4xlarge`, one GPU each). If one endpoint mixes a 1-GPU and a
+2-GPU instance, the 1-GPU instance fills first and refuses streams while the other still has room.
 
 On an instance with several GPUs, the container runs one copy of the model on each GPU and sends each
 new stream or request to the GPU with the fewest open sessions; nothing else changes. The endpoint is
@@ -198,7 +209,13 @@ Capacity is per GPU. Recommended concurrent streams per GPU for latency-sensitiv
 | L40S (`ml.g6e`) | 32 on `ml.g6e.4xlarge`, `ml.g6e.24xlarge` and `ml.g6e.48xlarge`; 24 on `ml.g6e.2xlarge` and `ml.g6e.12xlarge`; 16 on `ml.g6e.xlarge` (the CPUs per GPU set the limit) |
 | A10G (`ml.g5`) | 8; set `MAX_OPEN_STREAMS` to `8` |
 
-Scale up with a multi-GPU instance, or out with more instances and SageMaker auto scaling.
+Scale up with a multi-GPU instance, or out with more instances and SageMaker auto scaling. With
+`LEAST_OUTSTANDING_REQUESTS` routing (see [Deployment](#deployment)), new streams fill the least busy instance
+first. Leave headroom below the limit so a burst of new streams doesn't reach it.
+
+A stream over the limit opens normally and receives `Begin`; a few seconds later it receives an `Error` with
+`error_code` 3005 ("Session Cancelled: An error occurred") and the stream ends, which the SDK reports as a
+`ModelStreamError`. The refused stream is not billed. Retry it with a short backoff; the retry is routed again.
 
 ---
 
