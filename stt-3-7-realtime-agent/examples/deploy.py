@@ -1,0 +1,109 @@
+#!/usr/bin/env python3
+"""Deploy STT 3.7 Realtime Agent to a SageMaker real-time endpoint.
+
+The endpoint serves both live streaming (InvokeEndpointWithBidirectionalStream)
+and whole-file transcription (InvokeEndpoint).
+
+Usage:
+    python deploy.py --model-package-arn <arn> --role-arn <arn> [--instance-type ml.g7e.2xlarge]
+    python deploy.py --model-package-arn <arn> --role-arn <arn> --instance-type ml.g7e.2xlarge,ml.g7e.4xlarge
+    python deploy.py --model-package-arn <arn> --role-arn <arn> --instance-count 2
+    python deploy.py --delete [--name stt-3-7-realtime-agent]
+
+Several comma-separated instance types become an InstancePools variant, which
+SageMaker fills in that order of preference; list types with the same number of
+GPUs. The endpoint routes each new stream to the instance with the fewest open
+(LEAST_OUTSTANDING_REQUESTS).
+"""
+import argparse
+import time
+
+import boto3
+
+# Recommended. Provides NVIDIA driver 580 (CUDA 13), which the model runs on
+# natively; on an older default driver the container falls back to CUDA
+# compatibility libraries.
+INFERENCE_AMI_VERSION = "al2023-ami-sagemaker-inference-gpu-4-1"
+
+
+def delete(sm, name):
+    for call, kwargs in (
+        (sm.delete_endpoint, {"EndpointName": name}),
+        (sm.delete_endpoint_config, {"EndpointConfigName": name}),
+        (sm.delete_model, {"ModelName": name}),
+    ):
+        try:
+            call(**kwargs)
+            print(f"Deleted {call.__name__.removeprefix('delete_')}: {name}")
+        except sm.exceptions.ClientError as e:
+            print(f"Skipped {call.__name__.removeprefix('delete_')}: {e.response['Error']['Message']}")
+
+
+def main():
+    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    p.add_argument("--model-package-arn", help="from your AWS Marketplace subscription")
+    p.add_argument("--role-arn", help="SageMaker execution role")
+    p.add_argument("--instance-type", default="ml.g7e.2xlarge",
+                   help="any supported type, e.g. ml.g7e.2xlarge (one GPU) or ml.g7e.24xlarge (4 GPUs); "
+                        "see the README for the list. A comma-separated list is tried in order (InstancePools)")
+    p.add_argument("--instance-count", type=int, default=1)
+    p.add_argument("--name", default="stt-3-7-realtime-agent")
+    p.add_argument("--region", default=None)
+    p.add_argument("--delete", action="store_true", help="delete the endpoint, its config and the model")
+    args = p.parse_args()
+
+    sm = boto3.client("sagemaker", region_name=args.region)
+    if args.delete:
+        delete(sm, args.name)
+        return
+    if not (args.model_package_arn and args.role_arn):
+        p.error("--model-package-arn and --role-arn are required")
+
+    sm.create_model(
+        ModelName=args.name,
+        PrimaryContainer={"ModelPackageName": args.model_package_arn},
+        ExecutionRoleArn=args.role_arn,
+        # Required for AWS Marketplace model packages.
+        EnableNetworkIsolation=True,
+    )
+    types = [t.strip() for t in args.instance_type.split(",") if t.strip()]
+    variant = {
+        "VariantName": "primary",
+        "ModelName": args.name,
+        "InitialInstanceCount": args.instance_count,
+        "InferenceAmiVersion": INFERENCE_AMI_VERSION,
+        # Each new stream goes to the instance with the fewest open streams.
+        # This balances by stream count, so list instance types with the same
+        # GPU and the same number of GPUs.
+        "RoutingConfig": {"RoutingStrategy": "LEAST_OUTSTANDING_REQUESTS"},
+        # The weights are copied to the instance and loaded onto the GPU at
+        # startup, and on GPUs other than RTX PRO 4500 (ml.g7) the model is
+        # compiled there too, which can take over 20 minutes.
+        "ModelDataDownloadTimeoutInSeconds": 1800,
+        "ContainerStartupHealthCheckTimeoutInSeconds": 3600,
+    }
+    if len(types) == 1:
+        variant["InstanceType"] = types[0]
+    else:
+        # Tried in order; needs at least two entries.
+        variant["InstancePools"] = [{"InstanceType": t, "Priority": i + 1} for i, t in enumerate(types)]
+    sm.create_endpoint_config(EndpointConfigName=args.name, ProductionVariants=[variant])
+    sm.create_endpoint(EndpointName=args.name, EndpointConfigName=args.name)
+    print(f"Creating endpoint {args.name} on {' or '.join(types)}...")
+
+    t0 = time.time()
+    while True:
+        d = sm.describe_endpoint(EndpointName=args.name)
+        status = d["EndpointStatus"]
+        if status == "InService":
+            v = d["ProductionVariants"][0]
+            landed = v.get("InstanceType") or (v.get("InstancePools") or [{}])[0].get("InstanceType") or types[0]
+            print(f"InService after {time.time() - t0:.0f}s on {landed}")
+            return
+        if status in ("Failed", "OutOfService"):
+            raise SystemExit(f"{status}: {d.get('FailureReason', '')}")
+        time.sleep(20)
+
+
+if __name__ == "__main__":
+    main()

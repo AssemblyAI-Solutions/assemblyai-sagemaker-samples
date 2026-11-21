@@ -1,0 +1,783 @@
+{
+  "session_id": "e7cf7b84-15cc-4a2e-ad49-867dfd2f9da1",
+  "text": "This is a LibriVox recording. All LibriVox recordings are in the public domain. For more information and to find out how you can volunteer, please visit librivox.org. That's L-I-B-R-I-V-O-X dot org. Recording by Annie Coleman in St. Louis, Missouri in November 2005. Pride and Prejudice by Jane Austen. Chapter 1. It is a truth universally acknowledged that a single man in possession of a good fortune must be in want of a wife. However little known the feelings or views of such a man may be, on his first entering a neighbourhood, this truth is so well fixed in the minds of the surrounding families that he is",
+  "audio_duration_ms": 60000,
+  "turns": [
+    {
+      "turn_order": 0,
+      "transcript": "This is a LibriVox recording. All LibriVox recordings are in the public domain. For more information and to find out how you can volunteer, please visit librivox.org. That's L-I-B-R-I-V-O-X dot org. Recording by Annie Coleman in St. Louis, Missouri in November 2005.",
+      "end_of_turn_confidence": 1.0,
+      "words": [
+        {
+          "start": 2240,
+          "end": 2643,
+          "text": "This",
+          "confidence": 0.993772,
+          "word_is_final": true
+        },
+        {
+          "start": 2663,
+          "end": 2864,
+          "text": "is",
+          "confidence": 0.999972,
+          "word_is_final": true
+        },
+        {
+          "start": 2884,
+          "end": 2984,
+          "text": "a",
+          "confidence": 0.99999,
+          "word_is_final": true
+        },
+        {
+          "start": 3004,
+          "end": 3810,
+          "text": "LibriVox",
+          "confidence": 0.999954,
+          "word_is_final": true
+        },
+        {
+          "start": 3830,
+          "end": 4837,
+          "text": "recording.",
+          "confidence": 0.999951,
+          "word_is_final": true
+        },
+        {
+          "start": 4857,
+          "end": 5159,
+          "text": "All",
+          "confidence": 0.999915,
+          "word_is_final": true
+        },
+        {
+          "start": 5179,
+          "end": 5985,
+          "text": "LibriVox",
+          "confidence": 0.999997,
+          "word_is_final": true
+        },
+        {
+          "start": 6005,
+          "end": 7012,
+          "text": "recordings",
+          "confidence": 0.999997,
+          "word_is_final": true
+        },
+        {
+          "start": 7032,
+          "end": 7334,
+          "text": "are",
+          "confidence": 0.999996,
+          "word_is_final": true
+        },
+        {
+          "start": 7354,
+          "end": 7555,
+          "text": "in",
+          "confidence": 0.999994,
+          "word_is_final": true
+        },
+        {
+          "start": 7575,
+          "end": 7877,
+          "text": "the",
+          "confidence": 0.999998,
+          "word_is_final": true
+        },
+        {
+          "start": 7897,
+          "end": 8501,
+          "text": "public",
+          "confidence": 0.999977,
+          "word_is_final": true
+        },
+        {
+          "start": 8521,
+          "end": 9226,
+          "text": "domain.",
+          "confidence": 0.999969,
+          "word_is_final": true
+        },
+        {
+          "start": 9246,
+          "end": 9548,
+          "text": "For",
+          "confidence": 0.999861,
+          "word_is_final": true
+        },
+        {
+          "start": 9568,
+          "end": 9971,
+          "text": "more",
+          "confidence": 0.999991,
+          "word_is_final": true
+        },
+        {
+          "start": 9991,
+          "end": 11099,
+          "text": "information",
+          "confidence": 0.999987,
+          "word_is_final": true
+        },
+        {
+          "start": 11119,
+          "end": 11421,
+          "text": "and",
+          "confidence": 0.937318,
+          "word_is_final": true
+        },
+        {
+          "start": 11441,
+          "end": 11642,
+          "text": "to",
+          "confidence": 0.999978,
+          "word_is_final": true
+        },
+        {
+          "start": 11662,
+          "end": 12065,
+          "text": "find",
+          "confidence": 0.999995,
+          "word_is_final": true
+        },
+        {
+          "start": 12085,
+          "end": 12387,
+          "text": "out",
+          "confidence": 0.999967,
+          "word_is_final": true
+        },
+        {
+          "start": 12407,
+          "end": 12709,
+          "text": "how",
+          "confidence": 0.999987,
+          "word_is_final": true
+        },
+        {
+          "start": 12729,
+          "end": 13031,
+          "text": "you",
+          "confidence": 0.999993,
+          "word_is_final": true
+        },
+        {
+          "start": 13051,
+          "end": 13353,
+          "text": "can",
+          "confidence": 0.999984,
+          "word_is_final": true
+        },
+        {
+          "start": 13373,
+          "end": 14380,
+          "text": "volunteer,",
+          "confidence": 0.999752,
+          "word_is_final": true
+        },
+        {
+          "start": 14400,
+          "end": 15004,
+          "text": "please",
+          "confidence": 0.992614,
+          "word_is_final": true
+        },
+        {
+          "start": 15024,
+          "end": 15527,
+          "text": "visit",
+          "confidence": 0.999837,
+          "word_is_final": true
+        },
+        {
+          "start": 15544,
+          "end": 18668,
+          "text": "librivox.org.",
+          "confidence": 0.845401,
+          "word_is_final": true
+        },
+        {
+          "start": 18716,
+          "end": 20157,
+          "text": "That's",
+          "confidence": 0.998545,
+          "word_is_final": true
+        },
+        {
+          "start": 20205,
+          "end": 23809,
+          "text": "L-I-B-R-I-V-O-X",
+          "confidence": 0.987629,
+          "word_is_final": true
+        },
+        {
+          "start": 23857,
+          "end": 24577,
+          "text": "dot",
+          "confidence": 0.927427,
+          "word_is_final": true
+        },
+        {
+          "start": 24625,
+          "end": 25586,
+          "text": "org.",
+          "confidence": 0.983882,
+          "word_is_final": true
+        },
+        {
+          "start": 25634,
+          "end": 27796,
+          "text": "Recording",
+          "confidence": 0.968261,
+          "word_is_final": true
+        },
+        {
+          "start": 27800,
+          "end": 28059,
+          "text": "by",
+          "confidence": 0.897907,
+          "word_is_final": true
+        },
+        {
+          "start": 28085,
+          "end": 28734,
+          "text": "Annie",
+          "confidence": 0.999503,
+          "word_is_final": true
+        },
+        {
+          "start": 28760,
+          "end": 29669,
+          "text": "Coleman",
+          "confidence": 0.99985,
+          "word_is_final": true
+        },
+        {
+          "start": 29694,
+          "end": 29954,
+          "text": "in",
+          "confidence": 0.985479,
+          "word_is_final": true
+        },
+        {
+          "start": 29980,
+          "end": 30369,
+          "text": "St.",
+          "confidence": 0.995749,
+          "word_is_final": true
+        },
+        {
+          "start": 30395,
+          "end": 31174,
+          "text": "Louis,",
+          "confidence": 0.99952,
+          "word_is_final": true
+        },
+        {
+          "start": 31200,
+          "end": 32239,
+          "text": "Missouri",
+          "confidence": 0.999885,
+          "word_is_final": true
+        },
+        {
+          "start": 32264,
+          "end": 32524,
+          "text": "in",
+          "confidence": 0.712124,
+          "word_is_final": true
+        },
+        {
+          "start": 32549,
+          "end": 33589,
+          "text": "November",
+          "confidence": 0.999815,
+          "word_is_final": true
+        },
+        {
+          "start": 33614,
+          "end": 34264,
+          "text": "2005.",
+          "confidence": 0.99676,
+          "word_is_final": true
+        }
+      ],
+      "turn_is_formatted": true,
+      "start_ms": 2240,
+      "end_ms": 34264
+    },
+    {
+      "turn_order": 1,
+      "transcript": "Pride and Prejudice by Jane Austen. Chapter 1. It is a truth universally acknowledged that a single man in possession of a good fortune must be in want of a wife. However little known the feelings or views of such a man may be, on his first entering a neighbourhood, this truth is so well fixed in the minds of the surrounding families that he is",
+      "end_of_turn_confidence": 1.0,
+      "words": [
+        {
+          "start": 36672,
+          "end": 37147,
+          "text": "Pride",
+          "confidence": 0.987127,
+          "word_is_final": true
+        },
+        {
+          "start": 37166,
+          "end": 37451,
+          "text": "and",
+          "confidence": 0.999949,
+          "word_is_final": true
+        },
+        {
+          "start": 37470,
+          "end": 38325,
+          "text": "Prejudice",
+          "confidence": 0.999992,
+          "word_is_final": true
+        },
+        {
+          "start": 38344,
+          "end": 38534,
+          "text": "by",
+          "confidence": 0.911667,
+          "word_is_final": true
+        },
+        {
+          "start": 38553,
+          "end": 38933,
+          "text": "Jane",
+          "confidence": 0.999914,
+          "word_is_final": true
+        },
+        {
+          "start": 38952,
+          "end": 39617,
+          "text": "Austen.",
+          "confidence": 0.993124,
+          "word_is_final": true
+        },
+        {
+          "start": 39636,
+          "end": 40301,
+          "text": "Chapter",
+          "confidence": 0.999867,
+          "word_is_final": true
+        },
+        {
+          "start": 40320,
+          "end": 40510,
+          "text": "1.",
+          "confidence": 0.999506,
+          "word_is_final": true
+        },
+        {
+          "start": 40529,
+          "end": 40719,
+          "text": "It",
+          "confidence": 0.999766,
+          "word_is_final": true
+        },
+        {
+          "start": 40738,
+          "end": 40928,
+          "text": "is",
+          "confidence": 0.999977,
+          "word_is_final": true
+        },
+        {
+          "start": 40947,
+          "end": 41042,
+          "text": "a",
+          "confidence": 0.999968,
+          "word_is_final": true
+        },
+        {
+          "start": 41061,
+          "end": 41536,
+          "text": "truth",
+          "confidence": 0.999996,
+          "word_is_final": true
+        },
+        {
+          "start": 41555,
+          "end": 42600,
+          "text": "universally",
+          "confidence": 0.997379,
+          "word_is_final": true
+        },
+        {
+          "start": 42619,
+          "end": 43759,
+          "text": "acknowledged",
+          "confidence": 0.999754,
+          "word_is_final": true
+        },
+        {
+          "start": 43778,
+          "end": 44158,
+          "text": "that",
+          "confidence": 0.533841,
+          "word_is_final": true
+        },
+        {
+          "start": 44177,
+          "end": 44272,
+          "text": "a",
+          "confidence": 0.999986,
+          "word_is_final": true
+        },
+        {
+          "start": 44291,
+          "end": 44861,
+          "text": "single",
+          "confidence": 0.999994,
+          "word_is_final": true
+        },
+        {
+          "start": 44880,
+          "end": 45165,
+          "text": "man",
+          "confidence": 0.999997,
+          "word_is_final": true
+        },
+        {
+          "start": 45184,
+          "end": 45374,
+          "text": "in",
+          "confidence": 0.985503,
+          "word_is_final": true
+        },
+        {
+          "start": 45393,
+          "end": 46343,
+          "text": "possession",
+          "confidence": 0.999936,
+          "word_is_final": true
+        },
+        {
+          "start": 46362,
+          "end": 46552,
+          "text": "of",
+          "confidence": 0.999996,
+          "word_is_final": true
+        },
+        {
+          "start": 46571,
+          "end": 46666,
+          "text": "a",
+          "confidence": 0.999958,
+          "word_is_final": true
+        },
+        {
+          "start": 46685,
+          "end": 47065,
+          "text": "good",
+          "confidence": 0.999993,
+          "word_is_final": true
+        },
+        {
+          "start": 47084,
+          "end": 47749,
+          "text": "fortune",
+          "confidence": 0.999992,
+          "word_is_final": true
+        },
+        {
+          "start": 47768,
+          "end": 48148,
+          "text": "must",
+          "confidence": 0.997065,
+          "word_is_final": true
+        },
+        {
+          "start": 48167,
+          "end": 48357,
+          "text": "be",
+          "confidence": 0.999974,
+          "word_is_final": true
+        },
+        {
+          "start": 48376,
+          "end": 48566,
+          "text": "in",
+          "confidence": 0.999957,
+          "word_is_final": true
+        },
+        {
+          "start": 48585,
+          "end": 48965,
+          "text": "want",
+          "confidence": 0.9999,
+          "word_is_final": true
+        },
+        {
+          "start": 48984,
+          "end": 49174,
+          "text": "of",
+          "confidence": 0.999837,
+          "word_is_final": true
+        },
+        {
+          "start": 49193,
+          "end": 49288,
+          "text": "a",
+          "confidence": 0.999729,
+          "word_is_final": true
+        },
+        {
+          "start": 49307,
+          "end": 49782,
+          "text": "wife.",
+          "confidence": 0.945009,
+          "word_is_final": true
+        },
+        {
+          "start": 49792,
+          "end": 50255,
+          "text": "However",
+          "confidence": 0.999537,
+          "word_is_final": true
+        },
+        {
+          "start": 50268,
+          "end": 50664,
+          "text": "little",
+          "confidence": 0.999986,
+          "word_is_final": true
+        },
+        {
+          "start": 50677,
+          "end": 51007,
+          "text": "known",
+          "confidence": 0.970052,
+          "word_is_final": true
+        },
+        {
+          "start": 51020,
+          "end": 51218,
+          "text": "the",
+          "confidence": 0.999991,
+          "word_is_final": true
+        },
+        {
+          "start": 51231,
+          "end": 51760,
+          "text": "feelings",
+          "confidence": 0.999891,
+          "word_is_final": true
+        },
+        {
+          "start": 51773,
+          "end": 51905,
+          "text": "or",
+          "confidence": 0.998936,
+          "word_is_final": true
+        },
+        {
+          "start": 51918,
+          "end": 52248,
+          "text": "views",
+          "confidence": 0.999118,
+          "word_is_final": true
+        },
+        {
+          "start": 52261,
+          "end": 52393,
+          "text": "of",
+          "confidence": 0.999982,
+          "word_is_final": true
+        },
+        {
+          "start": 52406,
+          "end": 52670,
+          "text": "such",
+          "confidence": 0.999982,
+          "word_is_final": true
+        },
+        {
+          "start": 52683,
+          "end": 52749,
+          "text": "a",
+          "confidence": 0.999727,
+          "word_is_final": true
+        },
+        {
+          "start": 52762,
+          "end": 52960,
+          "text": "man",
+          "confidence": 0.999989,
+          "word_is_final": true
+        },
+        {
+          "start": 52973,
+          "end": 53171,
+          "text": "may",
+          "confidence": 0.999605,
+          "word_is_final": true
+        },
+        {
+          "start": 53184,
+          "end": 53382,
+          "text": "be,",
+          "confidence": 0.992857,
+          "word_is_final": true
+        },
+        {
+          "start": 53395,
+          "end": 53527,
+          "text": "on",
+          "confidence": 0.999658,
+          "word_is_final": true
+        },
+        {
+          "start": 53540,
+          "end": 53738,
+          "text": "his",
+          "confidence": 0.999448,
+          "word_is_final": true
+        },
+        {
+          "start": 53751,
+          "end": 54081,
+          "text": "first",
+          "confidence": 0.999909,
+          "word_is_final": true
+        },
+        {
+          "start": 54094,
+          "end": 54623,
+          "text": "entering",
+          "confidence": 0.999954,
+          "word_is_final": true
+        },
+        {
+          "start": 54636,
+          "end": 54702,
+          "text": "a",
+          "confidence": 0.999046,
+          "word_is_final": true
+        },
+        {
+          "start": 54715,
+          "end": 55641,
+          "text": "neighbourhood,",
+          "confidence": 0.906134,
+          "word_is_final": true
+        },
+        {
+          "start": 55654,
+          "end": 55918,
+          "text": "this",
+          "confidence": 0.997286,
+          "word_is_final": true
+        },
+        {
+          "start": 55931,
+          "end": 56261,
+          "text": "truth",
+          "confidence": 0.999948,
+          "word_is_final": true
+        },
+        {
+          "start": 56274,
+          "end": 56406,
+          "text": "is",
+          "confidence": 0.999934,
+          "word_is_final": true
+        },
+        {
+          "start": 56419,
+          "end": 56551,
+          "text": "so",
+          "confidence": 0.999688,
+          "word_is_final": true
+        },
+        {
+          "start": 56564,
+          "end": 56828,
+          "text": "well",
+          "confidence": 0.999822,
+          "word_is_final": true
+        },
+        {
+          "start": 56841,
+          "end": 57171,
+          "text": "fixed",
+          "confidence": 0.998316,
+          "word_is_final": true
+        },
+        {
+          "start": 57184,
+          "end": 57316,
+          "text": "in",
+          "confidence": 0.998681,
+          "word_is_final": true
+        },
+        {
+          "start": 57329,
+          "end": 57527,
+          "text": "the",
+          "confidence": 0.999885,
+          "word_is_final": true
+        },
+        {
+          "start": 57540,
+          "end": 57870,
+          "text": "minds",
+          "confidence": 0.999976,
+          "word_is_final": true
+        },
+        {
+          "start": 57883,
+          "end": 58015,
+          "text": "of",
+          "confidence": 0.999738,
+          "word_is_final": true
+        },
+        {
+          "start": 58028,
+          "end": 58226,
+          "text": "the",
+          "confidence": 0.999209,
+          "word_is_final": true
+        },
+        {
+          "start": 58239,
+          "end": 58966,
+          "text": "surrounding",
+          "confidence": 0.999969,
+          "word_is_final": true
+        },
+        {
+          "start": 58979,
+          "end": 59508,
+          "text": "families",
+          "confidence": 0.999915,
+          "word_is_final": true
+        },
+        {
+          "start": 59521,
+          "end": 59785,
+          "text": "that",
+          "confidence": 0.841171,
+          "word_is_final": true
+        },
+        {
+          "start": 59798,
+          "end": 59930,
+          "text": "he",
+          "confidence": 0.995794,
+          "word_is_final": true
+        },
+        {
+          "start": 59943,
+          "end": 60075,
+          "text": "is",
+          "confidence": 0.990888,
+          "word_is_final": true
+        }
+      ],
+      "turn_is_formatted": true,
+      "start_ms": 36672,
+      "end_ms": 60075
+    }
+  ]
+}
