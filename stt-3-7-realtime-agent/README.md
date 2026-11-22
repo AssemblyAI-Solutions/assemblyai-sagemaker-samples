@@ -60,7 +60,7 @@ python examples/deploy.py --delete
 
 | | |
 |---|---|
-| Real-time instance types | One GPU: `ml.g7e.2xlarge`, `ml.g7e.4xlarge`, `ml.g7e.8xlarge` (NVIDIA RTX PRO 6000); `ml.g6e.xlarge`, `ml.g6e.2xlarge`, `ml.g6e.4xlarge`, `ml.g6e.8xlarge`, `ml.g6e.16xlarge` (NVIDIA L40S); `ml.g7.2xlarge`, `ml.g7.4xlarge`, `ml.g7.8xlarge` (NVIDIA RTX PRO 4500); `ml.p5.4xlarge` (NVIDIA H100). Several GPUs: `ml.g7e.12xlarge` (2x RTX PRO 6000), `ml.g7e.24xlarge` (4x), `ml.g7e.48xlarge` (8x); `ml.g6e.12xlarge`, `ml.g6e.24xlarge` (4x L40S), `ml.g6e.48xlarge` (8x); `ml.g7.12xlarge` (2x RTX PRO 4500), `ml.g7.24xlarge` (4x), `ml.g7.48xlarge` (8x); `ml.p5.48xlarge` (8x H100). `ml.g7e.2xlarge` is the recommended starting point. Not `ml.g5` |
+| Real-time instance types | One GPU: `ml.g7e.2xlarge`, `ml.g7e.4xlarge`, `ml.g7e.8xlarge` (NVIDIA RTX PRO 6000); `ml.g6e.xlarge`, `ml.g6e.2xlarge`, `ml.g6e.4xlarge`, `ml.g6e.8xlarge`, `ml.g6e.16xlarge` (NVIDIA L40S); `ml.g7.2xlarge`, `ml.g7.4xlarge`, `ml.g7.8xlarge` (NVIDIA RTX PRO 4500). Several GPUs: `ml.g7e.12xlarge` (2x RTX PRO 6000), `ml.g7e.24xlarge` (4x), `ml.g7e.48xlarge` (8x); `ml.g6e.12xlarge`, `ml.g6e.24xlarge` (4x L40S), `ml.g6e.48xlarge` (8x); `ml.g7.12xlarge` (2x RTX PRO 4500), `ml.g7.24xlarge` (4x), `ml.g7.48xlarge` (8x). `ml.g7e.2xlarge` is the recommended starting point. Not `ml.g5` or `ml.p5` |
 | Batch transform instance type | `ml.g6e.xlarge` |
 | `InferenceAmiVersion` (real-time) | `al2023-ami-sagemaker-inference-gpu-4-1` - recommended |
 | `TransformAmiVersion` (batch) | `al2-ami-sagemaker-batch-gpu-535`; pass no `Environment` |
