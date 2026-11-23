@@ -1,0 +1,10 @@
+{
+  "name": "assemblyai-sagemaker",
+  "version": "1.1.0",
+  "description": "Agent skill for deploying, calling, scaling and troubleshooting AssemblyAI STT 3.7 Realtime Agent and Universal-3.6 Pro speech-to-text on Amazon SageMaker AI through AWS Marketplace.",
+  "author": {"name": "AssemblyAI"},
+  "homepage": "https://github.com/AssemblyAI-Solutions/assemblyai-sagemaker-samples",
+  "repository": "https://github.com/AssemblyAI-Solutions/assemblyai-sagemaker-samples",
+  "keywords": ["assemblyai", "sagemaker", "aws-marketplace", "speech-to-text", "voice-agent"],
+  "skills": ["./skills/assemblyai-sagemaker"]
+}

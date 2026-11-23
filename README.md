@@ -13,4 +13,17 @@ sample produces.
 Start with the folder's README, then the notebook. Both products need a Marketplace subscription,
 a SageMaker execution role and a service quota for the instance type you deploy on.
 
+## Use it with a coding agent
+
+[`skills/assemblyai-sagemaker/`](skills/assemblyai-sagemaker) is an agent skill that deploys, calls, scales and
+troubleshoots these endpoints. Subscribe on AWS Marketplace and copy the model package ARN first; the agent can't
+subscribe for you.
+
+- Claude Code: `/plugin marketplace add AssemblyAI-Solutions/assemblyai-sagemaker-samples`, then
+  `/plugin install assemblyai-sagemaker@assemblyai-sagemaker`
+- Cursor, Copilot and other agents that read skills: `npx skills add AssemblyAI-Solutions/assemblyai-sagemaker-samples`
+
+Then start a new session and describe what you want, for example "deploy STT 3.7 Realtime Agent in us-west-2 and
+stream a test file".
+
 Licensed under the terms in [LICENSE](LICENSE).
