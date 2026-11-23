@@ -1,0 +1,108 @@
+{
+  "session_id": "92a370b0-0660-4974-9364-e826dc5490d0",
+  "text": "This is a LibriVox recording. All LibriVox recordings are in the public domain.",
+  "audio_duration_ms": 10000,
+  "turns": [
+    {
+      "turn_order": 0,
+      "transcript": "This is a LibriVox recording. All LibriVox recordings are in the public domain.",
+      "end_of_turn_confidence": 1.0,
+      "words": [
+        {
+          "start": 2240,
+          "end": 2680,
+          "text": "This",
+          "confidence": 0.995169,
+          "word_is_final": true
+        },
+        {
+          "start": 2702,
+          "end": 2922,
+          "text": "is",
+          "confidence": 0.99994,
+          "word_is_final": true
+        },
+        {
+          "start": 2944,
+          "end": 3054,
+          "text": "a",
+          "confidence": 0.999993,
+          "word_is_final": true
+        },
+        {
+          "start": 3076,
+          "end": 3957,
+          "text": "LibriVox",
+          "confidence": 0.99997,
+          "word_is_final": true
+        },
+        {
+          "start": 3979,
+          "end": 5081,
+          "text": "recording.",
+          "confidence": 0.999957,
+          "word_is_final": true
+        },
+        {
+          "start": 5103,
+          "end": 5433,
+          "text": "All",
+          "confidence": 0.999818,
+          "word_is_final": true
+        },
+        {
+          "start": 5455,
+          "end": 6336,
+          "text": "LibriVox",
+          "confidence": 0.999997,
+          "word_is_final": true
+        },
+        {
+          "start": 6358,
+          "end": 7460,
+          "text": "recordings",
+          "confidence": 0.999994,
+          "word_is_final": true
+        },
+        {
+          "start": 7482,
+          "end": 7812,
+          "text": "are",
+          "confidence": 0.999991,
+          "word_is_final": true
+        },
+        {
+          "start": 7834,
+          "end": 8054,
+          "text": "in",
+          "confidence": 0.999993,
+          "word_is_final": true
+        },
+        {
+          "start": 8076,
+          "end": 8406,
+          "text": "the",
+          "confidence": 0.999994,
+          "word_is_final": true
+        },
+        {
+          "start": 8428,
+          "end": 9089,
+          "text": "public",
+          "confidence": 0.999979,
+          "word_is_final": true
+        },
+        {
+          "start": 9111,
+          "end": 9882,
+          "text": "domain.",
+          "confidence": 0.997708,
+          "word_is_final": true
+        }
+      ],
+      "turn_is_formatted": true,
+      "start_ms": 2240,
+      "end_ms": 9882
+    }
+  ]
+}
