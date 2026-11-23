@@ -6,7 +6,7 @@ sample produces.
 
 | Product | What it does | Folder |
 |---------|--------------|--------|
-| **STT 3.7 Realtime Agent** | Version 3.7.0 of the realtime listing: live speech-to-text for voice agents, with client-driven turn endings, plus whole-file and batch transcription on the same endpoint | [`stt-3-7-realtime-agent/`](stt-3-7-realtime-agent) |
+| **STT 3.7 Realtime Agent** | Version 3.7.0 of the realtime listing: live speech-to-text for voice agents, with built-in turn detection or turn endings from your own detector, plus whole-file and batch transcription on the same endpoint | [`stt-3-7-realtime-agent/`](stt-3-7-realtime-agent) |
 | **Universal-3.6 Pro Streaming** | Live speech-to-text over SageMaker bidirectional streaming, plus whole-file and batch transcription on the same endpoint | [`universal-3-6-pro-streaming/`](universal-3-6-pro-streaming) |
 | **Universal 3.5 Pro Sync** | Whole-file speech-to-text over real-time inference and batch transform | [`universal-3-5-pro-sync/`](universal-3-5-pro-sync) |
 

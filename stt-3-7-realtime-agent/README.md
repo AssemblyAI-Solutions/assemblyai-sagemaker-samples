@@ -7,9 +7,10 @@ Marketplace. One endpoint serves:
   receive partial and final transcripts as the speaker talks;
 - **whole-file transcription** over `InvokeEndpoint`, asynchronous inference and batch transform.
 
-STT 3.7 Realtime Agent is version 3.7.0 of AssemblyAI's realtime listing. It is built for voice agents: with
-`mode=manual`, your own voice activity detector decides when a turn ends and the final transcript comes back as soon
-as you send `ForceEndpoint` (see [Ending turns from the client](#ending-turns-from-the-client)). For versions 1.0.x
+STT 3.7 Realtime Agent is version 3.7.0 of AssemblyAI's realtime listing. It is built for voice agents: the model
+detects the end of each turn itself, and if your agent runs its own turn detection, `mode=manual` lets it end each turn
+and get the final transcript as soon as it sends `ForceEndpoint` (see
+[Ending turns from the client](#ending-turns-from-the-client)). For versions 1.0.x
 (Universal-3.6 Pro), see [`universal-3-6-pro-streaming/`](../universal-3-6-pro-streaming).
 
 This folder contains:
@@ -229,8 +230,10 @@ A stream over the limit opens normally and receives `Begin`; a few seconds later
 
 ### Ending turns from the client
 
-A voice agent usually runs its own voice activity detector to decide when the user has stopped talking. Open the
-stream with `mode=manual` and send `{"type": "ForceEndpoint"}` when your detector fires: the model ends the turn
+By default the model detects the end of each turn itself; `mode` (`balanced`, `min_latency` or `max_accuracy`) sets
+how it trades latency against accuracy. If your voice agent runs its own turn detection, such as a voice activity
+detector or push-to-talk, open the stream with `mode=manual` instead and send `{"type": "ForceEndpoint"}` when your
+detector fires: the model ends the turn
 there and the final transcript (`end_of_turn: true`) comes back right away, without waiting for silence of its
 own. Each `ForceEndpoint` ends exactly one turn.
 
